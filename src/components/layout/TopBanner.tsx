@@ -2,15 +2,17 @@
 
 import React from 'react';
 import { useCart } from '@/context/CartContext';
+import { useStore } from '@/context/StoreContext';
 import { Sparkles } from 'lucide-react';
 
 export const TopBanner: React.FC = () => {
   const { currency, setCurrency } = useCart();
+  const { settings } = useStore();
 
   return (
     <div className="w-full bg-brand-dark text-white text-[11px] sm:text-xs tracking-wider py-2 px-4 transition-all">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* 좌측: 긴급 혜택 공지 */}
+        {/* 좌측: 동적 긴급 혜택 공지 */}
         <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap">
           <span className="flex items-center gap-1 text-brand-glow font-medium">
             <Sparkles className="w-3.5 h-3.5" />
@@ -18,7 +20,10 @@ export const TopBanner: React.FC = () => {
           </span>
           <span className="hidden md:inline text-neutral-300">|</span>
           <span className="text-neutral-200">
-            첫 구매 고객 전원 10% 웰컴 쿠폰 <span className="font-semibold text-white">[WELCOME10]</span>
+            {settings.topBannerText}{' '}
+            {settings.topBannerPromoCode && (
+              <span className="font-semibold text-white">[{settings.topBannerPromoCode}]</span>
+            )}
           </span>
           <span className="hidden lg:inline text-neutral-400">
             • {currency === 'USD' ? 'Free shipping over $60' : '70,000원 이상 무료배송'}

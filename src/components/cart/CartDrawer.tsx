@@ -2,12 +2,14 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { formatPrice, calculateShippingProgress } from '@/lib/currency';
 import { Button } from '@/components/ui/Button';
 import { X, Plus, Minus, Trash2, ShoppingBag, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export const CartDrawer: React.FC = () => {
+  const router = useRouter();
   const {
     isOpen,
     closeCart,
@@ -27,6 +29,11 @@ export const CartDrawer: React.FC = () => {
     totalUsd,
     currency
   );
+
+  const handleProceedToCheckout = () => {
+    closeCart();
+    router.push('/checkout');
+  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
@@ -194,15 +201,7 @@ export const CartDrawer: React.FC = () => {
                 size="lg"
                 fullWidth
                 className="group flex items-center justify-center gap-2 text-sm uppercase tracking-wider"
-                onClick={() => {
-                  alert(
-                    `[다사쏘 주문 체크아웃 시뮬레이션]\n\n총 ${totalItems}개 상품 결제 단계로 이동합니다.\n결제 금액: ${formatPrice(
-                      totalKrw,
-                      totalUsd,
-                      currency
-                    )}`
-                  );
-                }}
+                onClick={handleProceedToCheckout}
               >
                 <span>PROCEED TO CHECKOUT</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

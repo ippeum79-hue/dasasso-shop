@@ -1,10 +1,14 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
+import { AuthProvider } from '@/context/AuthContext';
+import { OrderProvider } from '@/context/OrderContext';
+import { StoreProvider } from '@/context/StoreContext';
 import { TopBanner } from '@/components/layout/TopBanner';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/cart/CartDrawer';
+import { AuthModal } from '@/components/auth/AuthModal';
 
 export const metadata: Metadata = {
   title: 'DASASSO (다사쏘) | Effortless Chic & K-Glow Flagship',
@@ -27,13 +31,20 @@ export default function RootLayout({
   return (
     <html lang="ko" className="scroll-smooth">
       <body className="min-h-screen flex flex-col bg-brand-bg text-brand-dark antialiased">
-        <CartProvider>
-          <TopBanner />
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <CartDrawer />
-        </CartProvider>
+        <StoreProvider>
+          <AuthProvider>
+            <OrderProvider>
+              <CartProvider>
+                <TopBanner />
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+                <CartDrawer />
+                <AuthModal />
+              </CartProvider>
+            </OrderProvider>
+          </AuthProvider>
+        </StoreProvider>
       </body>
     </html>
   );

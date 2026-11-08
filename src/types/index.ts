@@ -35,6 +35,7 @@ export interface Product {
   isBest?: boolean;
   isNew?: boolean;
   isVegan?: boolean;
+  isFeatured?: boolean; // 메인 화면 주요 상품 진열 여부
   stockCount: number; // CRO: 재고 임박 알림용 (< 5인 경우 긴급 배지)
   salesPast24h?: number; // CRO: 실시간 구매량 ("24시간 내 38명 구매")
   routineStep?: number; // K-Beauty 루틴 단계 (1: 토너/패드, 2: 앰플/세럼, 3: 크림/선케어)
@@ -68,4 +69,60 @@ export interface LookbookLook {
   description: string;
   imageUrl: string;
   pairedProductIds: string[];
+}
+
+// ================= USER & AUTH TYPES =================
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string;
+  createdAt: string;
+  address?: {
+    postalCode: string;
+    roadAddress: string;
+    detailAddress: string;
+  };
+}
+
+// ================= ORDER & CHECKOUT TYPES =================
+export type OrderStatus = '결제완료' | '배송준비중' | '배송중' | '배송완료' | '주문취소';
+export type PaymentMethod = 'toss' | 'portone' | 'card' | 'kakaopay' | 'naverpay' | 'paypal';
+
+export interface ShippingInfo {
+  recipientName: string;
+  phone: string;
+  postalCode: string;
+  address: string;
+  detailAddress: string;
+  deliveryRequest?: string;
+}
+
+export interface Order {
+  id: string;
+  orderNumber: string;
+  userId?: string;
+  userEmail: string;
+  createdAt: string;
+  items: CartItem[];
+  shipping: ShippingInfo;
+  paymentMethod: PaymentMethod;
+  totalKrw: number;
+  totalUsd: number;
+  currency: Currency;
+  status: OrderStatus;
+}
+
+// ================= STORE SETTINGS (ADMIN) =================
+export interface StoreSettings {
+  topBannerText: string;
+  topBannerPromoCode: string;
+  heroTag: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  heroImageUrl: string;
+  heroPrimaryCtaText: string;
+  heroSecondaryCtaText: string;
+  trendingTitle: string;
+  trendingSubtitle: string;
 }

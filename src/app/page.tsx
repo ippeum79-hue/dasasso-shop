@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { MOCK_PRODUCTS, MOCK_LOOKBOOK, MOCK_REVIEWS } from '@/data/mockProducts';
+import { MOCK_LOOKBOOK, MOCK_REVIEWS } from '@/data/mockProducts';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Button } from '@/components/ui/Button';
 import { useCart } from '@/context/CartContext';
+import { useStore } from '@/context/StoreContext';
 import { formatPrice } from '@/lib/currency';
 import {
   Sparkles,
@@ -20,27 +21,30 @@ import {
 
 export default function HomePage() {
   const { currency, addItem } = useCart();
+  const { products, settings } = useStore();
   const [activeTab, setActiveTab] = useState<'all' | 'fashion' | 'beauty'>('all');
 
-  // 필터링된 상품
-  const filteredProducts = MOCK_PRODUCTS.filter((product) => {
-    if (activeTab === 'all') return true;
-    return product.category === activeTab;
-  });
+  // 필터링된 상품 (실시간 StoreContext 기반, 관리자 주요 상품 진열 필터 적용)
+  const filteredProducts = products
+    .filter((product) => product.isFeatured !== false)
+    .filter((product) => {
+      if (activeTab === 'all') return true;
+      return product.category === activeTab;
+    });
 
   // K-Beauty 루틴 상품 (Step 1, 2, 3)
-  const routineProducts = MOCK_PRODUCTS.filter(
+  const routineProducts = products.filter(
     (p) => p.category === 'beauty' && p.routineStep
   ).sort((a, b) => (a.routineStep || 0) - (b.routineStep || 0));
 
   return (
     <div className="space-y-20 sm:space-y-28">
-      {/* 01. HERO SECTION */}
+      {/* 01. HERO SECTION (동적 설정 반영) */}
       <section className="relative w-full min-h-[85vh] flex items-center justify-center overflow-hidden bg-neutral-900">
         {/* 배경 이미지 & 오버레이 */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=85&w=2000&auto=format&fit=crop"
+            src={settings.heroImageUrl || "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=85&w=2000&auto=format&fit=crop"}
             alt="DASASSO Seoul Fashion"
             fill
             priority
@@ -53,23 +57,21 @@ export default function HomePage() {
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center text-white space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs tracking-widest uppercase">
             <Sparkles className="w-3.5 h-3.5 text-brand-glow" />
-            <span>SEOUL FLAGSHIP 2026 DROP</span>
+            <span>{settings.heroTag}</span>
           </div>
 
-          <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-normal tracking-wide leading-tight">
-            Effortless Chic, <br />
-            <span className="italic font-light">Unfiltered Glow.</span>
+          <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-normal tracking-wide leading-tight whitespace-pre-line">
+            {settings.heroTitle}
           </h1>
 
-          <p className="text-sm sm:text-base text-neutral-200 max-w-xl mx-auto font-light leading-relaxed">
-            가장 지금다운 서울의 감각적인 일상 룩과 <br className="sm:hidden" />
-            피부 본연의 빛을 밝히는 엄선된 K-글로우 뷰티 컬렉션.
+          <p className="text-sm sm:text-base text-neutral-200 max-w-xl mx-auto font-light leading-relaxed whitespace-pre-line">
+            {settings.heroSubtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <a href="#collections">
               <Button variant="peach" size="lg" className="w-full sm:w-auto uppercase tracking-wider text-xs sm:text-sm">
-                신규 컬렉션 탐색
+                {settings.heroPrimaryCtaText}
               </Button>
             </a>
             <a href="#beauty">
@@ -78,7 +80,7 @@ export default function HomePage() {
                 size="lg"
                 className="w-full sm:w-auto text-white border-white hover:bg-white hover:text-black uppercase tracking-wider text-xs sm:text-sm"
               >
-                K-BEAUTY 루틴 보기
+                {settings.heroSecondaryCtaText}
               </Button>
             </a>
           </div>
@@ -107,8 +109,13 @@ export default function HomePage() {
               REAL-TIME TRENDING
             </div>
             <h2 className="font-serif text-2xl sm:text-4xl text-brand-dark font-medium mt-1">
-              지금 가장 사랑받는 서울 셀렉션
+              {settings.trendingTitle || '지금 가장 사랑받는 서울 셀렉션'}
             </h2>
+            {settings.trendingSubtitle && (
+              <p className="text-xs sm:text-sm text-brand-muted mt-1">
+                {settings.trendingSubtitle}
+              </p>
+            )}
           </div>
 
           {/* 카테고리 탭 필터 */}
@@ -186,7 +193,7 @@ export default function HomePage() {
 
               <div className="space-y-4">
                 {MOCK_LOOKBOOK[0].pairedProductIds.map((pId) => {
-                  const product = MOCK_PRODUCTS.find((p) => p.id === pId);
+                  const product = products.find((p) => p.id === pId);
                   if (!product) return null;
 
                   return (
@@ -237,7 +244,7 @@ export default function HomePage() {
                   size="md"
                   onClick={() => {
                     MOCK_LOOKBOOK[0].pairedProductIds.forEach((pId) => {
-                      const p = MOCK_PRODUCTS.find((item) => item.id === pId);
+                      const p = products.find((item) => item.id === pId);
                       if (p) addItem(p, 1);
                     });
                   }}
