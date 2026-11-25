@@ -28,8 +28,7 @@ export const metadata: Metadata = {
   },
   verification: {
     other: {
-      // 네이버 서치어드바이저 소유확인 메타 태그 (인증키를 발급받으신 경우 content 값을 교체해 주세요)
-      'naver-site-verification': '네이버_서치어드바이저_인증키_입력',
+      'naver-site-verification': '9743862ccf4516d03aa8ff2b672259e2f7493043',
     },
   },
 };
@@ -43,7 +42,7 @@ export default function RootLayout({
     <html lang="ko" className="scroll-smooth">
       <head>
         {/* 네이버 서치어드바이저 소유확인 메타 태그 */}
-        <meta name="naver-site-verification" content="네이버_서치어드바이저_인증키_입력" />
+        <meta name="naver-site-verification" content="9743862ccf4516d03aa8ff2b672259e2f7493043" />
       </head>
       <body className="min-h-screen flex flex-col bg-brand-bg text-brand-dark antialiased">
         <StoreProvider>
