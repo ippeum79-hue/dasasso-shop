@@ -3,8 +3,8 @@ $token = (& $gh auth token).Trim()
 $git = "$env:LOCALAPPDATA\Programs\MinGit\cmd\git.exe"
 
 & $git add .
-& $git commit -m "feat: Complete Checkout, PG Payments integration, and Fail page"
+& $git commit -m "feat(seo): Add Naver search advisor metadata, robots.txt and dynamic sitemap.xml for wooselect.com"
 & $git remote set-url origin "https://${token}@github.com/ippeum79-hue/dasasso-shop.git"
 & $git push origin main
 & $git remote set-url origin "https://github.com/ippeum79-hue/dasasso-shop.git"
-Write-Host "SYNC_SUCCESS"
+Write-Host "SEO_PUSH_SUCCESS"

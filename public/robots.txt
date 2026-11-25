@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /checkout/fail
+
+User-agent: Yeti
+Allow: /
+
+Sitemap: https://www.wooselect.com/sitemap.xml
